@@ -79,3 +79,5 @@ final class FeedCellLayoutCalculator: FeedCellLayoutCalculatorProtocol {
                      totalHeight: totalHeight)
     }
 }
+
+//
