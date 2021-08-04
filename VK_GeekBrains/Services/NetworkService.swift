@@ -20,12 +20,13 @@ final class NetworkService {
     private let version = "5.131"
     private let queue = OperationQueue()
     
-    func getFeed(completion: @escaping (FeedResponse?) -> Void) {
+    func getFeed(nextBatchFrom: String?, completion: @escaping (FeedResponse?) -> Void) {
         guard let token = authService.token else { return }
         let path = "newsfeed.get"
         let parameters: Parameters = [
             "access_token": token,
             "filters": "post,photo",
+            "start_from": nextBatchFrom as Any,
 //            "count": "1",
             "v": version
         ]
@@ -39,7 +40,7 @@ final class NetworkService {
                 guard let data = response.data else { return }
                 let decodableResponse = self.networkDataFetcher.decodeJSON(type: FeedResponseWrapped.self, from: data)
                 completion(decodableResponse?.response)
-//                print(decodableResponse as Any)
+                print(decodableResponse as Any)
             }
         }
     }

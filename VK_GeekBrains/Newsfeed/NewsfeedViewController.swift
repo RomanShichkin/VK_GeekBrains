@@ -8,16 +8,21 @@
 
 import UIKit
 
-protocol NewsfeedDisplayLogic: class {
+protocol NewsfeedDisplayLogic: AnyObject {
   func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData)
 }
 
-class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
-
+class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic, NewsFeedCellDelegate {
+    
   var interactor: NewsfeedBusinessLogic?
   var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
     private var feedViewModel = FeedViewModel.init(cells: [])
     @IBOutlet weak var table: UITableView!
+    private var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        return refreshControl
+    }()
     
   // MARK: Setup
   
@@ -42,14 +47,24 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
   override func viewDidLoad() {
     super.viewDidLoad()
     setup()
-    table.register(UINib(nibName: "NewsfeedCell", bundle: nil), forCellReuseIdentifier: NewsfeedCell.reuseId)
-    
-    table.separatorStyle = .none
-    table.backgroundColor = .clear
+    setupTable()
     view.backgroundColor = #colorLiteral(red: 0.351442337, green: 0.46931988, blue: 1, alpha: 1)
     
     interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
   }
+    
+    private func setupTable() {
+        table.register(UINib(nibName: "NewsfeedCell", bundle: nil), forCellReuseIdentifier: NewsfeedCell.reuseId)
+        
+        table.separatorStyle = .none
+        table.backgroundColor = .clear
+        table.addSubview(refreshControl)
+        
+    }
+    
+    @objc private func refresh() {
+        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
+    }
   
   func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData) {
 
@@ -57,10 +72,26 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     case .displayNewsFeed(feedViewModel: let feedViewModel):
         self.feedViewModel = feedViewModel
         table.reloadData()
+        refreshControl.endRefreshing()
     }
     
   }
-  
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView.contentOffset.y > scrollView.contentSize.height / 1.1 {
+            interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNextBatch)
+        }
+    }
+    
+    // MARK: NewsFeedCellDelegate
+    
+    func revealPost(for cell: NewsfeedCell) {
+        guard let indexPath = table.indexPath(for: cell) else { return }
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        
+        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.revealPostIds(postId: cellViewModel.postId))
+    }
+    
 }
 
 extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
@@ -72,11 +103,17 @@ extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: NewsfeedCell.reuseId, for: indexPath) as! NewsfeedCell
         let cellViewModel = feedViewModel.cells[indexPath.row]
         cell.set(viewModel: cellViewModel)
+        cell.delegate = self
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cellViewModel = feedViewModel.cells[indexPath.row]
+        return cellViewModel.sizes.totalHeight
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let cellViewModel = feedViewModel.cells[indexPath.row]
         return cellViewModel.sizes.totalHeight
     }

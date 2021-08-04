@@ -8,7 +8,7 @@
 import Foundation
 import VK_ios_sdk
 
-protocol AuthServiceDelegate: class {
+protocol AuthServiceDelegate: AnyObject {
     func authServiceShouldShow(_ viewController: UIViewController)
     func authServiceSignIn()
     func authServiceDidSignInFail()

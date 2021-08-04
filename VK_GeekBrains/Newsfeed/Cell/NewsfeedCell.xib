@@ -46,14 +46,14 @@
                                 </subviews>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nCd-Cd-B2P">
-                                <rect key="frame" x="8" y="52" width="382" height="45"/>
+                                <rect key="frame" x="8" y="52" width="382" height="36"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nBn-bh-yJy" customClass="WebImageView" customModule="VK_GeekBrains" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="105" width="398" height="50"/>
+                                <rect key="frame" x="0.0" y="105" width="181" height="50"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             </imageView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3mE-5k-G3H" userLabel="Bottom View">
@@ -139,6 +139,28 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yMa-Ce-tkv">
+                                <rect key="frame" x="8" y="84" width="173" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <state key="normal" title="Показать полностью...">
+                                    <color key="titleColor" red="0.46487247181930158" green="0.68726751116627582" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </state>
+                                <connections>
+                                    <action selector="moreTextButtonTouch:" destination="096-Pl-vtx" eventType="touchUpInside" id="G95-KW-5VY"/>
+                                </connections>
+                            </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="KRM-v4-GW2" customClass="GalleryCollectionView" customModule="VK_GeekBrains" customModuleProvider="target">
+                                <rect key="frame" x="193" y="105" width="197" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uuk-Mb-Hyc">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -149,8 +171,10 @@
                 <outlet property="cardView" destination="OCA-kC-DcT" id="Glk-Ud-twT"/>
                 <outlet property="commentsLabel" destination="ev2-da-lOB" id="PXs-Qv-WuA"/>
                 <outlet property="dateLabel" destination="xfT-Rj-X0P" id="5P4-67-dIW"/>
+                <outlet property="galleryCollectionView" destination="KRM-v4-GW2" id="YdP-zS-Tii"/>
                 <outlet property="iconImageView" destination="0mP-Zs-mZi" id="5fC-KT-bLi"/>
                 <outlet property="likesLabel" destination="ejf-qL-Qfh" id="bFE-TO-17m"/>
+                <outlet property="moreTextButton" destination="yMa-Ce-tkv" id="c49-Dn-qAS"/>
                 <outlet property="nameLabel" destination="kG8-qr-TQL" id="d8Y-uH-e3j"/>
                 <outlet property="postImageView" destination="nBn-bh-yJy" id="TcE-iY-Rwa"/>
                 <outlet property="postLabel" destination="nCd-Cd-B2P" id="Wwp-yP-7FY"/>

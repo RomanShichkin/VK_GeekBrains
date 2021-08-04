@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol NewsFeedCellDelegate: AnyObject {
+    func revealPost(for cell: NewsfeedCell)
+}
+
 protocol FeedCellViewModel {
     var iconUrlString: String { get }
     var name: String { get }
@@ -17,7 +21,7 @@ protocol FeedCellViewModel {
     var comments: String? { get }
     var shares: String? { get }
     var views: String? { get }
-    var photoAttachment: FeedCellPhotoAttachmentViewModel? { get }
+    var photoAttachments: [FeedCellPhotoAttachmentViewModel] { get }
     var sizes: FeedCellSizes { get }
 }
 
@@ -26,6 +30,7 @@ protocol FeedCellSizes {
     var attachmentFrame: CGRect { get }
     var bottomViewFrame: CGRect { get }
     var totalHeight: CGFloat { get }
+    var moreTextButtonFrame: CGRect { get }
 }
 
 protocol FeedCellPhotoAttachmentViewModel {
@@ -38,6 +43,8 @@ class NewsfeedCell: UITableViewCell {
     
     static let reuseId = "NewsfeedCell"
     
+    weak var delegate: NewsFeedCellDelegate?
+    
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var iconImageView: WebImageView!
     @IBOutlet weak var nameLabel: UILabel!
@@ -49,6 +56,9 @@ class NewsfeedCell: UITableViewCell {
     @IBOutlet weak var viewsLabel: UILabel!
     @IBOutlet weak var postImageView: WebImageView!
     @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var moreTextButton: UIButton!
+    @IBOutlet weak var galleryCollectionView: GalleryCollectionView!
+    
     
     override func prepareForReuse() {
         iconImageView.set(imageURL: nil)
@@ -68,6 +78,10 @@ class NewsfeedCell: UITableViewCell {
         selectionStyle = .none
     }
     
+    @IBAction func moreTextButtonTouch(_ sender: Any) {
+        delegate?.revealPost(for: self)
+    }
+    
     func set(viewModel: FeedCellViewModel) {
         iconImageView.set(imageURL: viewModel.iconUrlString)
         nameLabel.text = viewModel.name
@@ -77,16 +91,24 @@ class NewsfeedCell: UITableViewCell {
         commentsLabel.text = viewModel.comments
         sharesLabel.text = viewModel.shares
         viewsLabel.text = viewModel.views
+
+        postLabel.frame = viewModel.sizes.postLabelFrame
+        moreTextButton.frame = viewModel.sizes.moreTextButtonFrame
         bottomView.frame = viewModel.sizes.bottomViewFrame
         
-        postLabel.frame = viewModel.sizes.postLabelFrame
-        postImageView.frame = viewModel.sizes.attachmentFrame
-        
-        if let photoAttachment = viewModel.photoAttachment {
+        if let photoAttachment = viewModel.photoAttachments.first, viewModel.photoAttachments.count == 1 {
             postImageView.set(imageURL: photoAttachment.photoUrlString)
             postImageView.isHidden = false
+            galleryCollectionView.isHidden = true
+            postImageView.frame = viewModel.sizes.attachmentFrame
+        } else if viewModel.photoAttachments.count > 1 {
+            galleryCollectionView.frame = viewModel.sizes.attachmentFrame
+            postImageView.isHidden = true
+            galleryCollectionView.isHidden = false
+            galleryCollectionView.set(photos: viewModel.photoAttachments)
         } else {
             postImageView.isHidden = true
+            galleryCollectionView.isHidden = true
         }
     }
 }
