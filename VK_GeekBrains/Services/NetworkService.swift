@@ -147,5 +147,29 @@ final class NetworkService {
         }
     }
     
+    func getUserPhotos(userId: String, completion: @escaping ([PhotoItem]) -> Void) {
+        guard let token = authService.token else { return }
+        let path = "photos.getAll"
+        
+        let parameters: Parameters = [
+            "owner_id": userId,
+            "access_token": token,
+            "extended": "1",
+//            "count": "3",
+            "v": version
+        ]
+        
+        let url = baseUrl + path
+        
+        AF.request(url,
+                   method: .get,
+                   parameters: parameters
+        ).responseData { response in
+            guard let data = response.value else { return }
+            let userPhotos = try! JSONDecoder().decode(UserPhotos.self, from: data).response.items
+            print(userPhotos as Any)
+            completion(userPhotos)
+        }
+    }
     
 }

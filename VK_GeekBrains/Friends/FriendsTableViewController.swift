@@ -11,7 +11,7 @@ import UIKit
 class FriendsTableViewController: UITableViewController {
 
     let friendsTableViewCellReuse = "FriendsTableViewCell"
-    let fromFriendsToFotosSegue = "fromFriendsToFotos"
+    let fromFriendsToPhotosSegue = "fromFriendsToPhotos"
     
     var service = NetworkService()
     var friendsList = [FriendsItem]()
@@ -61,24 +61,24 @@ class FriendsTableViewController: UITableViewController {
 //         return DataStorage.shared.userSections[section]
 //    }
 
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == fromFriendsToFotosSegue {
-//            guard let userId = sender as? String,
-//                  let destination = segue.destination as? FotosCollectionViewController
-//
-//            else {
-//                return
-//            }
-//            destination.userId = userId
-//        }
-//    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == fromFriendsToPhotosSegue {
+            guard let userId = sender as? String,
+                  let destination = segue.destination as? PhotosCollectionViewController
+
+            else {
+                return
+            }
+            destination.userId = userId
+        }
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? FriendsTableViewCell,
               let userId = cell.saveUserId
         else { return }
         
-        performSegue(withIdentifier: fromFriendsToFotosSegue, sender: userId)
+        performSegue(withIdentifier: fromFriendsToPhotosSegue, sender: userId)
     }
   
 }
