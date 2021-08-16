@@ -17,6 +17,7 @@ class FriendsTableViewCell: UITableViewCell {
     
     var saveUserId: String?
 //    var saveGroup: Group?
+//    тест
     
     static let dateFormatter: DateFormatter = {
            let df = DateFormatter()
