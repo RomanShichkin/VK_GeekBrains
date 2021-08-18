@@ -14,20 +14,29 @@ class FriendsTableViewController: UITableViewController {
     let fromFriendsToPhotosSegue = "fromFriendsToPhotos"
     
     var service = NetworkService()
-    var friendsList = [FriendsItem]()
+//    var friendsList = [FriendsItem]()
     let dateFormatter = DateFormatter()
     let queue = OperationQueue()
     
+    private let friendsAdapter = VkAdapter()
+    private var friendsList: [FriendsItem] = []
+    
+    private let friendFactory = FriendsViewModelFactory()
+    private var viewModels: [FriendsViewModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        service.getUser()
         self.tableView.register(UINib(nibName: "FriendsTableViewCell", bundle: nil), forCellReuseIdentifier: friendsTableViewCellReuse)
         service.getFriendsList() {[weak self] friendsList in
-//            guard let friendsList = friendsList else { return }
-            self?.friendsList = friendsList
-            self?.tableView?.reloadData()
+            guard let self = self else { return }
+            self.friendsList = friendsList
+            self.viewModels = self.friendFactory.constructViewModel(from: friendsList)
+            self.tableView?.reloadData()
         }
-//        print(friendsListRealm)
+//        friendsAdapter.adapterGetFriends(){ [weak self] friendsList in
+//            self?.friendsList = friendsList
+//            self?.tableView?.reloadData()
+//        }
     }
 
     // MARK: - Table view data source
@@ -46,8 +55,8 @@ class FriendsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: friendsTableViewCellReuse, for: indexPath) as? FriendsTableViewCell else { return UITableViewCell() }
 
-        cell.configureWithUser(friends: friendsList[indexPath.row])
-
+//        cell.configureWithUser(friends: friendsList[indexPath.row])
+        cell.configureWithUser(friendsViewModel: viewModels[indexPath.row])
         // Configure the cell...
 
         return cell

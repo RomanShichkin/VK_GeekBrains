@@ -52,46 +52,53 @@ class FriendsTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configureWithUser(friends: FriendsItem) {
-        guard let url = URL(string: friends.photo100) else { return }
-        let session = URLSession.shared
-        
-        session.dataTask(with: url) { (data, response, error) in
-            if let data = data, let _ = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.mainImageView.setImage(at: url)
-//                    self.mainImageView.image = image
-                }
-            }
-        }.resume()
-        
-        
-        
-        if friends.bdate != nil {
-            self.descriptionLabel.text =  "ДР: " + friends.bdate!
-        } else {
-            self.descriptionLabel.text = "Дата рождения не указана"
-        }
-
-//        descriptionLabel.text =  "ДР: " + friends.bdate
-        nameLabel.text = friends.firstName + " " + friends.lastName
-        
-        shadowView.clipsToBounds = false
-        shadowView.backgroundColor = UIColor.darkGray
-        shadowView.layer.cornerRadius = mainImageView.frame.size.width / 2.0
-        shadowView.layer.shadowColor = myShadowColor.cgColor
-        shadowView.layer.shadowOffset = CGSize.zero
-        shadowView.layer.shadowRadius = myShadowRadius
-        shadowView.layer.shadowOpacity = myShadowOpacity
-
-        mainImageView.layer.cornerRadius = mainImageView.frame.size.width / 2.0
-        
-        mainImageView.layer.shadowOffset = CGSize.zero
-        mainImageView.layer.shadowRadius = 60
-        mainImageView.layer.shadowOpacity = 2
-
-        saveUserId = String(friends.id)
+//    func configureWithUser(friends: FriendsItem) {
+//        guard let url = URL(string: friends.photo100) else { return }
+//        let session = URLSession.shared
+//
+//        session.dataTask(with: url) { (data, response, error) in
+//            if let data = data, let _ = UIImage(data: data) {
+//                DispatchQueue.main.async {
+//                    self.mainImageView.setImage(at: url)
+////                    self.mainImageView.image = image
+//                }
+//            }
+//        }.resume()
+//
+//        if friends.bdate != nil {
+//            self.descriptionLabel.text =  "ДР: " + friends.bdate!
+//        } else {
+//            self.descriptionLabel.text = "Дата рождения не указана"
+//        }
+//
+////        descriptionLabel.text =  "ДР: " + friends.bdate
+//        nameLabel.text = friends.firstName + " " + friends.lastName
+//
+//        shadowView.clipsToBounds = false
+//        shadowView.backgroundColor = UIColor.darkGray
+//        shadowView.layer.cornerRadius = mainImageView.frame.size.width / 2.0
+//        shadowView.layer.shadowColor = myShadowColor.cgColor
+//        shadowView.layer.shadowOffset = CGSize.zero
+//        shadowView.layer.shadowRadius = myShadowRadius
+//        shadowView.layer.shadowOpacity = myShadowOpacity
+//
+//        mainImageView.layer.cornerRadius = mainImageView.frame.size.width / 2.0
+//
+//        mainImageView.layer.shadowOffset = CGSize.zero
+//        mainImageView.layer.shadowRadius = 60
+//        mainImageView.layer.shadowOpacity = 2
+//
+//        saveUserId = String(friends.id)
+//    }
+    
+    //FACTORY
+    func configureWithUser(friendsViewModel: FriendsViewModel) {
+        mainImageView.image = friendsViewModel.mainImage
+        nameLabel.text = friendsViewModel.nameLabel
+        descriptionLabel.text = friendsViewModel.descriptionLabel
     }
+    
+    
     
     func configureWithGroup(groups: GroupItem) {
         guard let url = URL(string: groups.photo100) else { return }
